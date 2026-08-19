@@ -48,4 +48,6 @@ public class ObraController {
 		return ResponseEntity.status(HttpStatus.OK).body(obraService.findAllObras(pageable));
 	}
 	
+	//Fazer getAll a partir do Usuário depois.
+	
 }
