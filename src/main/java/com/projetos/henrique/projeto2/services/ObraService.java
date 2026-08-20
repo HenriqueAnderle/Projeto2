@@ -1,5 +1,8 @@
 package com.projetos.henrique.projeto2.services;
 
+import java.util.Optional;
+import java.util.UUID;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -27,8 +30,16 @@ public class ObraService {
 		obraRepository.delete(obra);
 	}
 	
+	public Optional<Obra> findById(UUID idObra) {
+		return obraRepository.findById(idObra);
+	}
+	
 	public Page<Obra> findAllObras(Pageable pageable){
 		return obraRepository.findAll(pageable);
+	}
+	
+	public Page<Obra> findAllByUsuario(Pageable pageable, UUID idUsuario){
+		return obraRepository.findAllByObra(pageable, idUsuario);
 	}
 	
 	public boolean existsByNome(String nome) {

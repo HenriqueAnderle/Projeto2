@@ -1,11 +1,12 @@
 package com.projetos.henrique.projeto2.services;
 
+import java.util.UUID;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.projetos.henrique.projeto2.models.MaterialServico;
-import com.projetos.henrique.projeto2.models.Solicitacao;
 import com.projetos.henrique.projeto2.repositories.MaterialServicoRepository;
 
 import jakarta.transaction.Transactional;
@@ -28,11 +29,12 @@ public class MaterialServicoService {
 		materialServicoRepository.delete(materialServico);
 	}
 	
+	//Deletar esse método depois
 	public Page<MaterialServico> findAllMaterialServico(Pageable pageable){
 		return materialServicoRepository.findAll(pageable);
 	}
 	
-	public Page<MaterialServico> findAllBySolicitacao(Pageable pageable, Solicitacao solicitacao){
-		return materialServicoRepository.findAllBySolicitacao(pageable, solicitacao);
+	public Page<MaterialServico> findAllBySolicitacao(Pageable pageable, UUID idSolicitacao){
+		return materialServicoRepository.findAllBySolicitacao(pageable, idSolicitacao);
 	}
 }

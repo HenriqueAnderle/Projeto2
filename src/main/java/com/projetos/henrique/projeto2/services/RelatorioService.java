@@ -1,11 +1,12 @@
 package com.projetos.henrique.projeto2.services;
 
+import java.util.UUID;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.projetos.henrique.projeto2.models.Relatorio;
-import com.projetos.henrique.projeto2.models.Usuario;
 import com.projetos.henrique.projeto2.repositories.RelatorioRepository;
 
 import jakarta.transaction.Transactional;
@@ -28,11 +29,12 @@ public class RelatorioService {
 		relatorioRepository.delete(relatorio);
 	}
 	
+	//Deletar Depois
 	public Page<Relatorio> findAllRelatorio(Pageable pageable){
 		return relatorioRepository.findAll(pageable);
 	}
 	
-	public Page<Relatorio> findAllByUsuario(Pageable pageable, Usuario usuario){
-		return relatorioRepository.findAllByUsuario(pageable, usuario);
+	public Page<Relatorio> findAllByUsuario(Pageable pageable, UUID idUsuario){
+		return relatorioRepository.findAllByUsuario(pageable, idUsuario);
 	}
 }

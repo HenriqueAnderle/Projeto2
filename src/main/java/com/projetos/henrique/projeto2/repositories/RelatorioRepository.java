@@ -7,10 +7,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.projetos.henrique.projeto2.models.Relatorio;
-import com.projetos.henrique.projeto2.models.Usuario;
 
 public interface RelatorioRepository extends JpaRepository<Relatorio, UUID> {
 	
-	Page<Relatorio> findAllByUsuario(Pageable pageable, Usuario usuario);
+	Page<Relatorio> findAllByUsuario(Pageable pageable, UUID idUsuario);
 
+	//Deletar depois
+	Page<Relatorio> findAllRelatorio(Pageable pageable);
 }

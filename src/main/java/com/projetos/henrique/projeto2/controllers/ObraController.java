@@ -1,5 +1,8 @@
 package com.projetos.henrique.projeto2.controllers;
 
+import java.util.Optional;
+import java.util.UUID;
+
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -8,7 +11,9 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -44,10 +49,31 @@ public class ObraController {
 	}
 	
 	@GetMapping
-	public ResponseEntity<Page<Obra>> getAllObras(@PageableDefault(page = 0, size = 10, direction = Sort.Direction.ASC) Pageable pageable){
-		return ResponseEntity.status(HttpStatus.OK).body(obraService.findAllObras(pageable));
+	public ResponseEntity<Page<Obra>> getAllObras(@PageableDefault(page = 0, size = 10, direction = Sort.Direction.ASC) Pageable pageable, UUID idUsuario){
+		return ResponseEntity.status(HttpStatus.OK).body(obraService.findAllByUsuario(pageable, idUsuario));
 	}
 	
-	//Fazer getAll a partir do Usuário depois.
+	@GetMapping("/{idObra}")
+	public ResponseEntity<Object> getByUsuario(@PathVariable(value = "idObra") UUID idObra){
+		Optional<Obra> obraOptional = obraService.findById(idObra);
+		
+		if(!obraOptional.isPresent()) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Obra Not Found");
+		}
+		
+		return ResponseEntity.status(HttpStatus.OK).body(obraOptional.get());
+	}
+	
+	@DeleteMapping("/{idObra}")
+	public ResponseEntity<Object> deletarObra(@PathVariable(value = "idObra") UUID idObra){
+		Optional<Obra> obraOptional = obraService.findById(idObra);
+		
+		if(!obraOptional.isPresent()) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Obra Not Found");
+		}
+		
+		obraService.deletarObra(obraOptional.get());
+		return ResponseEntity.status(HttpStatus.OK).body("Obra Deleted Successfully");
+	}
 	
 }

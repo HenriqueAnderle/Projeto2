@@ -1,11 +1,12 @@
 package com.projetos.henrique.projeto2.services;
 
+import java.util.UUID;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.projetos.henrique.projeto2.models.NaoConformidade;
-import com.projetos.henrique.projeto2.models.Relatorio;
 import com.projetos.henrique.projeto2.repositories.NaoConformidadeRepository;
 
 import jakarta.transaction.Transactional;
@@ -28,11 +29,12 @@ public class NaoConformidadeService {
 		naoConformidadeRepository.delete(naoConformidade);
 	}
 	
+	//Excluir esse aqui depois
 	public Page<NaoConformidade> findAllNaoConformidade(Pageable pageable){
 		return naoConformidadeRepository.findAll(pageable);
 	}
 	
-	public Page<NaoConformidade> findAllByRelatorio(Pageable pageable, Relatorio relatorio){
-		return naoConformidadeRepository.findAllByRelatorio(relatorio, pageable);
+	public Page<NaoConformidade> findAllByRelatorio(Pageable pageable, UUID idRelatorio){
+		return naoConformidadeRepository.findAllByRelatorio(pageable, idRelatorio);
 	}
 }

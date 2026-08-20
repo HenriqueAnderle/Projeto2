@@ -1,5 +1,8 @@
 package com.projetos.henrique.projeto2.services;
 
+import java.util.Optional;
+import java.util.UUID;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -25,6 +28,10 @@ public class UsuarioService {
 	
 	public void deletarUsuario(Usuario usuario) {
 		usuarioRepository.delete(usuario);
+	}
+	
+	public Optional<Usuario> findById(UUID idUsuario) {
+		return usuarioRepository.findById(idUsuario);
 	}
 	
 	public Page<Usuario> findAllUsuario(Pageable pageable){

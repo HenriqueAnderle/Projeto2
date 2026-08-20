@@ -1,5 +1,7 @@
 package com.projetos.henrique.projeto2.controllers;
 
+import java.util.UUID;
+
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,7 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.projetos.henrique.projeto2.dtos.RelatorioDto;
 import com.projetos.henrique.projeto2.models.Relatorio;
-import com.projetos.henrique.projeto2.models.Usuario;
 import com.projetos.henrique.projeto2.services.RelatorioService;
 
 import jakarta.validation.Valid;
@@ -40,14 +41,16 @@ public class RelatorioController {
 		return ResponseEntity.status(HttpStatus.CREATED).body(relatorioService.inserirRelatorio(relatorio));
 	}
 	
+	//Deletar Depois
+	/*
 	@GetMapping
 	public ResponseEntity<Page<Relatorio>> getAllRelatorios(@PageableDefault(page = 0, size = 10, direction = Sort.Direction.ASC) Pageable pageable){
 		return ResponseEntity.status(HttpStatus.OK).body(relatorioService.findAllRelatorio(pageable));
 	}
+	*/
 	
-	//Terminar isso depois, usando PathVariable por que eu não lembro agora.
 	@GetMapping
-	public ResponseEntity<Page<Relatorio>> getAllRelatoriosByUsuario(@PageableDefault(page = 0, size = 10, direction = Sort.Direction.ASC) Pageable pageable, Usuario usuario){
-		return ResponseEntity.status(HttpStatus.OK).body(relatorioService.findAllByUsuario(pageable, usuario));
+	public ResponseEntity<Page<Relatorio>> getAllRelatoriosByUsuario(@PageableDefault(page = 0, size = 10, direction = Sort.Direction.ASC) Pageable pageable, UUID idUsuario){
+		return ResponseEntity.status(HttpStatus.OK).body(relatorioService.findAllByUsuario(pageable, idUsuario));
 	}
 }
