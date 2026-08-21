@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.projetos.henrique.projeto2.dtos.ContatoDto;
@@ -52,12 +53,13 @@ public class ContatoController {
 	}
 	
 	@GetMapping
-	public ResponseEntity<Page<Contato>> getAllContatos(@PageableDefault(page = 0, size = 10, direction = Sort.Direction.ASC) Pageable pageable, UUID idUsuario){		
+	public ResponseEntity<Page<Contato>> getAllContatos(@PageableDefault(page = 0, size = 10, direction = Sort.Direction.ASC) Pageable pageable,
+			@RequestParam UUID idUsuario){		
 		return ResponseEntity.status(HttpStatus.OK).body(contatoService.findAllByUsuario(pageable, idUsuario));
 	}
 	
 	@GetMapping("/{idContato}")
-	public ResponseEntity<Object> getByUsuario(@PathVariable(value = "idUsuario") UUID idContato){
+	public ResponseEntity<Object> getByUsuario(@PathVariable(value = "idContato") UUID idContato){
 		Optional<Contato> contatoOptional = contatoService.findById(idContato);
 		if(!contatoOptional.isPresent()) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Contato Not Found");

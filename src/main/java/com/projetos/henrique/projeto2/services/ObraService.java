@@ -34,12 +34,8 @@ public class ObraService {
 		return obraRepository.findById(idObra);
 	}
 	
-	public Page<Obra> findAllObras(Pageable pageable){
-		return obraRepository.findAll(pageable);
-	}
-	
 	public Page<Obra> findAllByUsuario(Pageable pageable, UUID idUsuario){
-		return obraRepository.findAllByObra(pageable, idUsuario);
+		return obraRepository.findAllByUsuario_IdUsuario(pageable, idUsuario);
 	}
 	
 	public boolean existsByNome(String nome) {

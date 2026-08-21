@@ -12,5 +12,5 @@ public interface ObraRepository extends JpaRepository<Obra, UUID>{
 
 	boolean existsByNome(String nome);
 	
-	Page<Obra> findAllByObra(Pageable pageable, UUID idUsuario);
+	Page<Obra> findAllByUsuario_IdUsuario(Pageable pageable, UUID idUsuario);
 }

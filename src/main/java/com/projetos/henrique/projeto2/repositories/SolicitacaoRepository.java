@@ -7,9 +7,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.projetos.henrique.projeto2.models.Solicitacao;
-import com.projetos.henrique.projeto2.models.Usuario;
 
 public interface SolicitacaoRepository extends JpaRepository<Solicitacao, UUID>{
 
-	Page<Solicitacao> findAllByUsuario(Pageable pageable, Usuario usuario);
+	Page<Solicitacao> findAllByUsuario_IdUsuario(Pageable pageable, UUID idUsuario);
 }

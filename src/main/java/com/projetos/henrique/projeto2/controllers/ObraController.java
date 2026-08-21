@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.projetos.henrique.projeto2.dtos.ObraDto;
@@ -49,12 +50,13 @@ public class ObraController {
 	}
 	
 	@GetMapping
-	public ResponseEntity<Page<Obra>> getAllObras(@PageableDefault(page = 0, size = 10, direction = Sort.Direction.ASC) Pageable pageable, UUID idUsuario){
+	public ResponseEntity<Page<Obra>> getAllByUsuario(@PageableDefault(page = 0, size = 10, direction = Sort.Direction.ASC) Pageable pageable,
+			@RequestParam UUID idUsuario){
 		return ResponseEntity.status(HttpStatus.OK).body(obraService.findAllByUsuario(pageable, idUsuario));
 	}
 	
 	@GetMapping("/{idObra}")
-	public ResponseEntity<Object> getByUsuario(@PathVariable(value = "idObra") UUID idObra){
+	public ResponseEntity<Object> getById(@PathVariable(value = "idObra") UUID idObra){
 		Optional<Obra> obraOptional = obraService.findById(idObra);
 		
 		if(!obraOptional.isPresent()) {

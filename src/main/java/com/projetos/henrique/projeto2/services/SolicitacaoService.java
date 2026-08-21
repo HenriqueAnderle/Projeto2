@@ -1,11 +1,13 @@
 package com.projetos.henrique.projeto2.services;
 
+import java.util.Optional;
+import java.util.UUID;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.projetos.henrique.projeto2.models.Solicitacao;
-import com.projetos.henrique.projeto2.models.Usuario;
 import com.projetos.henrique.projeto2.repositories.SolicitacaoRepository;
 
 import jakarta.transaction.Transactional;
@@ -28,12 +30,12 @@ public class SolicitacaoService {
 		solicitacaoRepository.delete(solicitacao);
 	}
 	
-	public Page<Solicitacao> findAllSolicitacao(Pageable pageable){
-		return solicitacaoRepository.findAll(pageable);
+	public Optional<Solicitacao> findById(UUID idSolicitacao){
+		return solicitacaoRepository.findById(idSolicitacao);
 	}
 	
-	public Page<Solicitacao> findAllByUsuario(Pageable pageable, Usuario usuario){
-		return solicitacaoRepository.findAllByUsuario(pageable, usuario);
+	public Page<Solicitacao> findAllByUsuario(Pageable pageable, UUID idUsuario){
+		return solicitacaoRepository.findAllByUsuario_IdUsuario(pageable, idUsuario);
 	}
 	
 }

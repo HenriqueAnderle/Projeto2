@@ -34,13 +34,8 @@ public class ContatoService {
 		return contatoRepository.findById(idUsuario);
 	}
 	
-	//Excluir esse método depois
-	public Page<Contato> findAllContatos(Pageable pageable){
-		return contatoRepository.findAll(pageable);
-	}
-	
 	public Page<Contato> findAllByUsuario(Pageable pageable, UUID idUsuario){
-		return contatoRepository.findAllByUsuario(pageable, idUsuario);
+		return contatoRepository.findAllByUsuario_IdUsuario(pageable, idUsuario);
 	}
 	
 	public boolean existsByNome(String nome) {

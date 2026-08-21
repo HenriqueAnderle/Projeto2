@@ -1,5 +1,6 @@
 package com.projetos.henrique.projeto2.services;
 
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.data.domain.Page;
@@ -29,12 +30,11 @@ public class RelatorioService {
 		relatorioRepository.delete(relatorio);
 	}
 	
-	//Deletar Depois
-	public Page<Relatorio> findAllRelatorio(Pageable pageable){
-		return relatorioRepository.findAll(pageable);
+	public Optional<Relatorio> findById(UUID idRelatorio){
+		return relatorioRepository.findById(idRelatorio);
 	}
 	
 	public Page<Relatorio> findAllByUsuario(Pageable pageable, UUID idUsuario){
-		return relatorioRepository.findAllByUsuario(pageable, idUsuario);
+		return relatorioRepository.findAllByUsuario_IdUsuario(pageable, idUsuario);
 	}
 }

@@ -34,7 +34,7 @@ public class UsuarioService {
 		return usuarioRepository.findById(idUsuario);
 	}
 	
-	public Page<Usuario> findAllUsuario(Pageable pageable){
+	public Page<Usuario> findAll(Pageable pageable){
 		return usuarioRepository.findAll(pageable);
 	}
 	

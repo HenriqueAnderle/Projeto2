@@ -14,6 +14,6 @@ public interface ContatoRepository extends JpaRepository<Contato, UUID>{
 	
 	boolean existsByEmail(String email);
 		
-	Page<Contato> findAllByUsuario(Pageable pageable, UUID idUsuario);
+	Page<Contato> findAllByUsuario_IdUsuario(Pageable pageable, UUID idUsuario);
 	
 }

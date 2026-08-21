@@ -10,8 +10,6 @@ import com.projetos.henrique.projeto2.models.Relatorio;
 
 public interface RelatorioRepository extends JpaRepository<Relatorio, UUID> {
 	
-	Page<Relatorio> findAllByUsuario(Pageable pageable, UUID idUsuario);
+	Page<Relatorio> findAllByUsuario_IdUsuario(Pageable pageable, UUID idUsuario);
 
-	//Deletar depois
-	Page<Relatorio> findAllRelatorio(Pageable pageable);
 }
