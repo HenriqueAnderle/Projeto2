@@ -1,10 +1,9 @@
 package com.projetos.henrique.projeto2.services;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.projetos.henrique.projeto2.models.Vistoriador;
@@ -38,8 +37,8 @@ public class VistoriadorService {
 		return vistoriadorRepository.existsByNome(nome);
 	}
 	
-	public Page<Vistoriador> findAllByRelatorio(Pageable pageable, UUID idRelatorio){
-		return vistoriadorRepository.findAllByRelatorio_IdRelatorio(pageable, idRelatorio);
+	public Optional<List<Vistoriador>> findAllByRelatorio(UUID idRelatorio){
+		return vistoriadorRepository.findAllByRelatorio_IdRelatorio(idRelatorio);
 	}
 	
 }

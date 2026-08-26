@@ -1,5 +1,7 @@
 package com.projetos.henrique.projeto2.services;
 
+import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.data.domain.Page;
@@ -34,7 +36,7 @@ public class NaoConformidadeService {
 		return naoConformidadeRepository.findAll(pageable);
 	}
 	
-	public Page<NaoConformidade> findAllByRelatorio(Pageable pageable, UUID idRelatorio){
-		return naoConformidadeRepository.findAllByRelatorio(pageable, idRelatorio);
+	public Optional<List<NaoConformidade>> findAllByRelatorio(UUID idRelatorio){
+		return naoConformidadeRepository.findAllByRelatorio_IdRelatorio(idRelatorio);
 	}
 }
