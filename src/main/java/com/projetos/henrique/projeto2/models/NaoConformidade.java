@@ -27,7 +27,7 @@ public class NaoConformidade {
 	@Column(name = "id_nao_conformidade")
 	private UUID idNaoConformidade;
 	
-	private List<String> imagens = new ArrayList<>();
+	//private List<String> imagens = new ArrayList<>();
 	
 	@Column(name = "observacao_nao_conformidade")
 	private String observacao;
@@ -53,7 +53,7 @@ public class NaoConformidade {
 			EtapaDaObra etapaDaObra, TipoDeNaoConformidade tipoDeNaoConformidade) {
 		
 		this.idNaoConformidade = idNaoConformidade;
-		this.imagens = imagens;
+		//this.imagens = imagens;
 		this.observacao = observacao;
 		this.relatorio = relatorio;
 		this.pavimento = pavimento;
@@ -64,7 +64,7 @@ public class NaoConformidade {
 	public NaoConformidade(List<String> imagens, String observacao, Relatorio relatorio, Pavimento pavimento,
 			EtapaDaObra etapaDaObra, TipoDeNaoConformidade tipoDeNaoConformidade) {
 		
-		this.imagens = imagens;
+		//this.imagens = imagens;
 		this.observacao = observacao;
 		this.relatorio = relatorio;
 		this.pavimento = pavimento;
@@ -88,12 +88,14 @@ public class NaoConformidade {
 	public void setIdNaoConformidade(UUID idNaoConformidade) {
 		this.idNaoConformidade = idNaoConformidade;
 	}
+	/*
 	public List<String> getImagens() {
 		return imagens;
 	}
 	public void setImagens(List<String> imagens) {
 		this.imagens = imagens;
 	}
+	*/
 	public String getObservacao() {
 		return observacao;
 	}

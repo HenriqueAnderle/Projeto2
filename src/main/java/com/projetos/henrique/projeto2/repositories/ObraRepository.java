@@ -1,5 +1,6 @@
 package com.projetos.henrique.projeto2.repositories;
 
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.data.domain.Page;
@@ -13,4 +14,6 @@ public interface ObraRepository extends JpaRepository<Obra, UUID>{
 	boolean existsByNome(String nome);
 	
 	Page<Obra> findAllByUsuario_IdUsuario(Pageable pageable, UUID idUsuario);
+	
+	Optional<Obra> findByNome(String nome);
 }

@@ -24,7 +24,7 @@ public class Obra implements Serializable{
 	@Column(name = "id_obra")
 	private UUID idObra;
 	
-	@Column(name = "nome_obra")
+	@Column(name = "nome_obra", unique = true)
 	private String nome;
 	
 	@ManyToOne(fetch = FetchType.LAZY)

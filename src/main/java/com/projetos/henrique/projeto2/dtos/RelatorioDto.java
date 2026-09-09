@@ -1,11 +1,11 @@
 package com.projetos.henrique.projeto2.dtos;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 import com.projetos.henrique.projeto2.enumerations.CondicaoClimatica;
 import com.projetos.henrique.projeto2.enumerations.Tempo;
-import com.projetos.henrique.projeto2.models.Obra;
-import com.projetos.henrique.projeto2.models.Usuario;
+import com.projetos.henrique.projeto2.models.Relatorio;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -21,17 +21,32 @@ public class RelatorioDto {
 	@NotNull
 	private boolean condicao;
 
-	@NotNull
-	private Obra obra;
+	@NotBlank
+	private String nomeObra;
 	
 	@NotNull
-	private Usuario usuario;
+	private UUID idUsuario;
 	
 	@NotNull
 	private CondicaoClimatica condicaoClimatica;
 	
 	@NotNull
 	private Tempo tempo;
+	
+	public static RelatorioDto fromEntity(Relatorio relatorio) {
+
+        RelatorioDto dto = new RelatorioDto();
+
+        dto.setDataRelatorio(relatorio.getDataRelatorio());
+        dto.setEmpresaExecutora(relatorio.getEmpresaExecutora());
+        dto.setCondicao(relatorio.isCondicao());
+        dto.setNomeObra(relatorio.getObra().getNome());
+        dto.setIdUsuario(relatorio.getUsuario().getIdUsuario());
+        dto.setCondicaoClimatica(relatorio.getCondicaoClimatica());
+        dto.setTempo(relatorio.getTempo());
+
+        return dto;
+    }
 
 	public LocalDate getDataRelatorio() {
 		return dataRelatorio;
@@ -57,20 +72,20 @@ public class RelatorioDto {
 		this.condicao = condicao;
 	}
 
-	public Obra getObra() {
-		return obra;
+	public String getNomeObra() {
+		return nomeObra;
 	}
 
-	public void setObra(Obra obra) {
-		this.obra = obra;
+	public void setNomeObra(String nomeObra) {
+		this.nomeObra = nomeObra;
 	}
 
-	public Usuario getUsuario() {
-		return usuario;
+	public UUID getIdUsuario() {
+		return idUsuario;
 	}
 
-	public void setUsuario(Usuario usuario) {
-		this.usuario = usuario;
+	public void setIdUsuario(UUID idUsuario) {
+		this.idUsuario = idUsuario;
 	}
 
 	public CondicaoClimatica getCondicaoClimatica() {

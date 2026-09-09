@@ -2,11 +2,12 @@ package com.projetos.henrique.projeto2.dtos;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import com.projetos.henrique.projeto2.enumerations.EtapaDaObra;
 import com.projetos.henrique.projeto2.enumerations.Pavimento;
 import com.projetos.henrique.projeto2.enumerations.TipoDeNaoConformidade;
-import com.projetos.henrique.projeto2.models.Relatorio;
+import com.projetos.henrique.projeto2.models.NaoConformidade;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -19,7 +20,7 @@ public class NaoConformidadeDto {
 	private String observacao;
 	
 	@NotNull
-	private Relatorio relatorio;
+	private UUID idRelatorio;
 	
 	@NotNull
 	private Pavimento pavimento;
@@ -29,6 +30,26 @@ public class NaoConformidadeDto {
 	
 	@NotNull
 	private TipoDeNaoConformidade tipoDeNaoConformidade;
+	
+	public static List<NaoConformidadeDto> fromEntity(List<NaoConformidade> naoConformidades) {
+		
+		List<NaoConformidadeDto> naoConformidadesDtos = new ArrayList<NaoConformidadeDto>();
+		
+		for(NaoConformidade naoConformidade : naoConformidades) {
+			
+		NaoConformidadeDto dto = new NaoConformidadeDto();
+		
+		dto.setObservacao(naoConformidade.getObservacao());
+		dto.setRelatorio(naoConformidade.getRelatorio().getIdRelatorio());
+		dto.setPavimento(naoConformidade.getPavimento());
+		dto.setEtapaDaObra(naoConformidade.getEtapaDaObra());
+		dto.setTipoDeNaoConformidade(naoConformidade.getTipoDeNaoConformidade());
+		
+		naoConformidadesDtos.add(dto);
+		}
+		
+		return naoConformidadesDtos;
+	}
 
 	public List<String> getImagens() {
 		return imagens;
@@ -45,13 +66,13 @@ public class NaoConformidadeDto {
 	public void setObservacao(String observacao) {
 		this.observacao = observacao;
 	}
-
-	public Relatorio getRelatorio() {
-		return relatorio;
+	
+	public UUID getRelatorio() {
+		return idRelatorio;
 	}
-
-	public void setRelatorio(Relatorio relatorio) {
-		this.relatorio = relatorio;
+	
+	public void setRelatorio(UUID idRelatorio) {
+		this.idRelatorio = idRelatorio;
 	}
 
 	public Pavimento getPavimento() {

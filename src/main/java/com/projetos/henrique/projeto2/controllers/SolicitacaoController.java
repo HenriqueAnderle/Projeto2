@@ -1,5 +1,7 @@
 package com.projetos.henrique.projeto2.controllers;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -20,8 +22,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.projetos.henrique.projeto2.dtos.SolicitacaoDto;
+import com.projetos.henrique.projeto2.dtos.MaterialServicoDto;
+import com.projetos.henrique.projeto2.dtos.SolicitacaoRequestDto;
+import com.projetos.henrique.projeto2.dtos.SolicitacaoResponseDto;
+import com.projetos.henrique.projeto2.models.MaterialServico;
 import com.projetos.henrique.projeto2.models.Solicitacao;
+import com.projetos.henrique.projeto2.services.MaterialServicoService;
 import com.projetos.henrique.projeto2.services.SolicitacaoService;
 
 import jakarta.validation.Valid;
@@ -32,18 +38,34 @@ import jakarta.validation.Valid;
 public class SolicitacaoController {
 
 	final SolicitacaoService solicitacaoService;
+	final MaterialServicoService materialServicoService;
 	
-	public SolicitacaoController(SolicitacaoService solicitacaoService) {
+	public SolicitacaoController(SolicitacaoService solicitacaoService, MaterialServicoService materialServicoService) {
 		this.solicitacaoService = solicitacaoService;
+		this.materialServicoService = materialServicoService;
 	}
 	
 	@PostMapping
-	public ResponseEntity<Object> inserirSolicitacao(@RequestBody @Valid SolicitacaoDto solicitacaoDto){
+	public ResponseEntity<Object> inserirSolicitacao(@RequestBody @Valid SolicitacaoRequestDto solicitacaoRequest){
 		
 		Solicitacao solicitacao = new Solicitacao();
-		BeanUtils.copyProperties(solicitacaoDto, solicitacao);
+		BeanUtils.copyProperties(solicitacaoRequest.getSolicitacaoDto(), solicitacao);
 		
-		return ResponseEntity.status(HttpStatus.CREATED).body(solicitacaoService.inserirSolicitacao(solicitacao));
+		List<MaterialServico> materiaisServicos = new ArrayList<MaterialServico>();
+		for(MaterialServicoDto materialServicoDto : solicitacaoRequest.getMateriaisServicosDto()) {
+			
+			MaterialServico materialServico = new MaterialServico();
+			
+			BeanUtils.copyProperties(materialServicoDto, materialServico);
+			materialServicoService.inserirMaterialServico(materialServico);
+			
+			materiaisServicos.add(materialServico);
+		}
+		SolicitacaoResponseDto response = new SolicitacaoResponseDto();
+		response.setSolicitacao(solicitacao);
+		response.setMateriaisServicos(materiaisServicos);
+		
+		return ResponseEntity.status(HttpStatus.CREATED).body(materialServicoService);
 	}
 	
 	@GetMapping
@@ -54,24 +76,43 @@ public class SolicitacaoController {
 	
 	@GetMapping("/{idSolicitacao}")
 	public ResponseEntity<Object> getById(@PathVariable(value = "idSolicitacao") UUID idSolicitacao){
-		Optional<Solicitacao> solicitacaoOptional = solicitacaoService.findById(idSolicitacao);
 		
+		SolicitacaoResponseDto solicitacaoResponseDto = new SolicitacaoResponseDto();
+		
+		Optional<Solicitacao> solicitacaoOptional = solicitacaoService.findById(idSolicitacao);
 		if(!solicitacaoOptional.isPresent()) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Solicitacao Not Found");
 		}
+		solicitacaoResponseDto.setSolicitacao(solicitacaoOptional.get());
 		
-		return ResponseEntity.status(HttpStatus.OK).body(solicitacaoOptional.get());
+		Optional<List<MaterialServico>> materiaisServicosOptional = materialServicoService.findAllBySolicitacao(idSolicitacao);
+		if(!materiaisServicosOptional.isPresent()) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Materiais/Serviços Not Found");
+		}
+		solicitacaoResponseDto.setMateriaisServicos(materiaisServicosOptional.get());
+		
+		return ResponseEntity.status(HttpStatus.OK).body(solicitacaoResponseDto);
 	}
 	
 	@DeleteMapping("/{idSolicitacao}")
 	public ResponseEntity<Object> deletarSolicitacao(@PathVariable(value = "idSolicitacao") UUID idSolicitacao){
+		
 		Optional<Solicitacao> solicitacaoOptional = solicitacaoService.findById(idSolicitacao);
 		
 		if(!solicitacaoOptional.isPresent()) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Solicitacao Not Found");
 		}
 		
+		Optional<List<MaterialServico>> materiaisServicosOptional = materialServicoService.findAllBySolicitacao(idSolicitacao);
+		if(!materiaisServicosOptional.isPresent()) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Materiais/Serviços Not Found");
+		}
+		
 		solicitacaoService.deletarSolicitacao(solicitacaoOptional.get());
+		
+		for(MaterialServico materialServico : materiaisServicosOptional.get()) {
+			materialServicoService.deletarMaterialServico(materialServico);
+		}
 		
 		return ResponseEntity.status(HttpStatus.OK).body("Solicitacao Deleted Successfully");
 	}

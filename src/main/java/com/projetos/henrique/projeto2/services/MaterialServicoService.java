@@ -1,5 +1,7 @@
 package com.projetos.henrique.projeto2.services;
 
+import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.data.domain.Page;
@@ -34,7 +36,7 @@ public class MaterialServicoService {
 		return materialServicoRepository.findAll(pageable);
 	}
 	
-	public Page<MaterialServico> findAllBySolicitacao(Pageable pageable, UUID idSolicitacao){
-		return materialServicoRepository.findAllBySolicitacao(pageable, idSolicitacao);
+	public Optional<List<MaterialServico>> findAllBySolicitacao(UUID idSolicitacao){
+		return materialServicoRepository.findAllBySolicitacao_IdSolicitacao(idSolicitacao);
 	}
 }
