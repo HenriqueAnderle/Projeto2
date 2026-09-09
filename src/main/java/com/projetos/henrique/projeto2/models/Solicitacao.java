@@ -109,7 +109,7 @@ public class Solicitacao implements Serializable{
 	public void setImagem(String imagem) {
 		this.imagem = imagem;
 	}
-	public boolean isLogo() {
+	public boolean getLogo() {
 		return logo;
 	}
 	public void setLogo(boolean logo) {

@@ -2,11 +2,11 @@ package com.projetos.henrique.projeto2.dtos;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 import com.projetos.henrique.projeto2.enumerations.EtapaDaObra;
 import com.projetos.henrique.projeto2.enumerations.Solicitante;
-import com.projetos.henrique.projeto2.models.Obra;
-import com.projetos.henrique.projeto2.models.Usuario;
+import com.projetos.henrique.projeto2.models.Solicitacao;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -29,16 +29,32 @@ public class SolicitacaoDto {
 	private LocalDateTime previsaoChegada;
 	
 	@NotNull
-	private Obra obra;
+	private String nomeObra;
 	
 	@NotNull
-	private Usuario usuario;
+	private UUID idUsuario;
 	
 	@NotNull
 	private Solicitante solicitante;
 	
 	@NotNull
 	private EtapaDaObra etapaDaObra;
+	
+	public static SolicitacaoDto fromEntity(Solicitacao solicitacao) {
+		
+		SolicitacaoDto dto = new SolicitacaoDto();
+		
+		dto.setObservacao(solicitacao.getObservacao());
+		dto.setLogo(solicitacao.getLogo());
+		dto.setDataSolicitacao(solicitacao.getDataSolicitacao());
+		dto.setPrevisaoChegada(solicitacao.getPrevisaoChegada());
+		dto.setNomeObra(solicitacao.getObra().getNome());
+		dto.setIdUsuario(solicitacao.getUsuario().getIdUsuario());
+		dto.setSolicitante(solicitacao.getSolicitante());
+		dto.setEtapaDaObra(solicitacao.getEtapaDaObra());
+		
+		return dto;
+	}
 
 	public String getObservacao() {
 		return observacao;
@@ -80,20 +96,20 @@ public class SolicitacaoDto {
 		this.previsaoChegada = previsaoChegada;
 	}
 
-	public Obra getObra() {
-		return obra;
+	public String getNomeObra() {
+		return nomeObra;
 	}
 
-	public void setObra(Obra obra) {
-		this.obra = obra;
+	public void setNomeObra(String nomeObra) {
+		this.nomeObra = nomeObra;
 	}
 
-	public Usuario getUsuario() {
-		return usuario;
+	public UUID getIdUsuario() {
+		return idUsuario;
 	}
 
-	public void setUsuario(Usuario usuario) {
-		this.usuario = usuario;
+	public void setIdUsuario(UUID idUsuario) {
+		this.idUsuario = idUsuario;
 	}
 
 	public Solicitante getSolicitante() {

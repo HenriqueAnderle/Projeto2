@@ -23,8 +23,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.projetos.henrique.projeto2.dtos.MaterialServicoDto;
+import com.projetos.henrique.projeto2.dtos.SolicitacaoDto;
 import com.projetos.henrique.projeto2.dtos.SolicitacaoRequestDto;
-import com.projetos.henrique.projeto2.dtos.SolicitacaoResponseDto;
 import com.projetos.henrique.projeto2.models.MaterialServico;
 import com.projetos.henrique.projeto2.models.Solicitacao;
 import com.projetos.henrique.projeto2.services.MaterialServicoService;
@@ -61,11 +61,8 @@ public class SolicitacaoController {
 			
 			materiaisServicos.add(materialServico);
 		}
-		SolicitacaoResponseDto response = new SolicitacaoResponseDto();
-		response.setSolicitacao(solicitacao);
-		response.setMateriaisServicos(materiaisServicos);
 		
-		return ResponseEntity.status(HttpStatus.CREATED).body(materialServicoService);
+		return ResponseEntity.status(HttpStatus.CREATED).body(solicitacaoRequest);
 	}
 	
 	@GetMapping
@@ -77,21 +74,21 @@ public class SolicitacaoController {
 	@GetMapping("/{idSolicitacao}")
 	public ResponseEntity<Object> getById(@PathVariable(value = "idSolicitacao") UUID idSolicitacao){
 		
-		SolicitacaoResponseDto solicitacaoResponseDto = new SolicitacaoResponseDto();
+		SolicitacaoRequestDto solicitacaoRequestDto = new SolicitacaoRequestDto();
 		
 		Optional<Solicitacao> solicitacaoOptional = solicitacaoService.findById(idSolicitacao);
 		if(!solicitacaoOptional.isPresent()) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Solicitacao Not Found");
 		}
-		solicitacaoResponseDto.setSolicitacao(solicitacaoOptional.get());
+		solicitacaoRequestDto.setSolicitacaoDto(SolicitacaoDto.fromEntity(solicitacaoOptional.get()));
 		
 		Optional<List<MaterialServico>> materiaisServicosOptional = materialServicoService.findAllBySolicitacao(idSolicitacao);
 		if(!materiaisServicosOptional.isPresent()) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Materiais/Serviços Not Found");
 		}
-		solicitacaoResponseDto.setMateriaisServicos(materiaisServicosOptional.get());
+		solicitacaoRequestDto.setMateriaisServicosDto(MaterialServicoDto.fromEntity(materiaisServicosOptional.get()));
 		
-		return ResponseEntity.status(HttpStatus.OK).body(solicitacaoResponseDto);
+		return ResponseEntity.status(HttpStatus.OK).body(solicitacaoRequestDto);
 	}
 	
 	@DeleteMapping("/{idSolicitacao}")
