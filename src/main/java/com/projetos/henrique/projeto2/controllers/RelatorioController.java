@@ -135,8 +135,6 @@ public class RelatorioController {
 		if(!vistoriadoresOptional.isPresent()) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Vistoriadores Not Found");
 		}
-		
-		relatorioService.deletarRelatorio(relatorioOptional.get());
 
 		for(NaoConformidade naoConformidade : naoConformidadesOptional.get()) {
 			naoConformidadeService.deletarNaoConformidade(naoConformidade);
@@ -146,6 +144,8 @@ public class RelatorioController {
 			vistoriadorService.deletarVistoriador(vistoriador);
 		}
 		
-		return ResponseEntity.status(HttpStatus.OK).body("Relatorio Deleted Successfully");
+		relatorioService.deletarRelatorio(relatorioOptional.get());
+		
+		return ResponseEntity.status(HttpStatus.OK).body("Relatorio, Não Conformidades And Vistoriadores Deleted Successfully");
 	}
 }

@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -28,7 +29,7 @@ import jakarta.validation.Valid;
 
 @RestController
 @CrossOrigin(origins = "*", maxAge = 3600)
-@RequestMapping("/obra")
+@RequestMapping("/home/obras")
 public class ObraController {
 
 	final ObraService obraService;
@@ -55,6 +56,24 @@ public class ObraController {
 		return ResponseEntity.status(HttpStatus.OK).body(obraService.findAllByUsuario(pageable, idUsuario));
 	}
 	
+	@PutMapping("/{idObra}/editar")
+	public ResponseEntity<Object> editarObra(@PathVariable(value = "idObra") UUID idObra, @RequestBody @Valid ObraDto obraDto){
+		Optional<Obra> obraOptional = obraService.findById(idObra);
+		
+		if(!obraOptional.isPresent()) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Obra Not Found");
+		}
+		
+		Obra obra = new Obra();
+		BeanUtils.copyProperties(obraOptional, obra);
+		
+		obra.setIdObra(obraOptional.get().getIdObra());
+		obra.setUsuario(obraOptional.get().getUsuario());
+		
+		return ResponseEntity.status(HttpStatus.OK).body(obraService.inserirObra(obra));
+	}
+	
+	/*
 	@GetMapping("/{idObra}")
 	public ResponseEntity<Object> getById(@PathVariable(value = "idObra") UUID idObra){
 		Optional<Obra> obraOptional = obraService.findById(idObra);
@@ -65,6 +84,7 @@ public class ObraController {
 		
 		return ResponseEntity.status(HttpStatus.OK).body(obraOptional.get());
 	}
+	*/
 	
 	@DeleteMapping("/{idObra}")
 	public ResponseEntity<Object> deletarObra(@PathVariable(value = "idObra") UUID idObra){

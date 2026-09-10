@@ -1,6 +1,7 @@
 package com.projetos.henrique.projeto2.dtos;
 
-import com.projetos.henrique.projeto2.models.Usuario;
+import java.util.UUID;
+
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -14,7 +15,7 @@ public class ContatoDto {
 	private String email;
 	
 	@NotNull
-	private Usuario usuario;
+	private UUID idUsuario;
 
 	public String getNome() {
 		return nome;
@@ -32,11 +33,11 @@ public class ContatoDto {
 		this.email = email;
 	}
 
-	public Usuario getUsuario() {
-		return usuario;
+	public UUID getIdUsuario() {
+		return idUsuario;
 	}
 
-	public void setUsuario(Usuario usuario) {
-		this.usuario = usuario;
+	public void setIdUsuario(UUID idUsuario) {
+		this.idUsuario = idUsuario;
 	}
 }

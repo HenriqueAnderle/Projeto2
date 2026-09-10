@@ -1,6 +1,6 @@
 package com.projetos.henrique.projeto2.dtos;
 
-import com.projetos.henrique.projeto2.models.Usuario;
+import java.util.UUID;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -11,7 +11,7 @@ public class ObraDto {
 	private String nome;
 	
 	@NotNull
-	private Usuario usuario;
+	private UUID idUsuario;
 	
 	public String getNome() {
 		return nome;
@@ -21,11 +21,11 @@ public class ObraDto {
 		this.nome = nome;
 	}
 
-	public Usuario getUsuario() {
-		return usuario;
+	public UUID getIdUsuario() {
+		return idUsuario;
 	}
 
-	public void setUsuario(Usuario usuario) {
-		this.usuario = usuario;
+	public void setIdUsuario(UUID idUsuario) {
+		this.idUsuario = idUsuario;
 	}
 }
