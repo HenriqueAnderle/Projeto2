@@ -73,6 +73,7 @@ public class ObraController {
 		return ResponseEntity.status(HttpStatus.OK).body(obraService.inserirObra(obra));
 	}
 	
+	//Deletar depois
 	/*
 	@GetMapping("/{idObra}")
 	public ResponseEntity<Object> getById(@PathVariable(value = "idObra") UUID idObra){
