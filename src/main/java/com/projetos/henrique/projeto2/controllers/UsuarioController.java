@@ -1,5 +1,7 @@
 package com.projetos.henrique.projeto2.controllers;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -10,6 +12,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,7 +23,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.projetos.henrique.projeto2.dtos.UsuarioDto;
+import com.projetos.henrique.projeto2.enumerations.RoleNome;
+import com.projetos.henrique.projeto2.models.Role;
 import com.projetos.henrique.projeto2.models.Usuario;
+import com.projetos.henrique.projeto2.services.RoleService;
 import com.projetos.henrique.projeto2.services.UsuarioService;
 
 import jakarta.validation.Valid;
@@ -31,9 +37,13 @@ import jakarta.validation.Valid;
 public class UsuarioController {
 
 	final UsuarioService usuarioService;
+	final PasswordEncoder passwordEncoder;
+	final RoleService roleService;
 	
-	public UsuarioController(UsuarioService usuarioService) {
+	public UsuarioController(UsuarioService usuarioService, PasswordEncoder passwordEncoder, RoleService roleService) {
 		this.usuarioService = usuarioService;
+		this.passwordEncoder = passwordEncoder;
+		this.roleService = roleService;
 	}
 	
 	@PostMapping
@@ -42,8 +52,14 @@ public class UsuarioController {
 			return ResponseEntity.status(HttpStatus.CONFLICT).body("Conflict: Email Já em Uso");
 		}
 		
+		usuarioDto.setSenha(passwordEncoder.encode(usuarioDto.getSenha()));
+		
 		Usuario usuario = new Usuario();
 		BeanUtils.copyProperties(usuarioDto, usuario);
+		
+		List<Role> roles = new ArrayList<Role>();
+		roles.add(roleService.findByRoleNome(RoleNome.ROLE_USER));
+		usuario.setRoles(roles);
 		
 		return ResponseEntity.status(HttpStatus.CREATED).body(usuarioService.inserirUsuario(usuario));
 	}

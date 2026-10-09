@@ -8,7 +8,9 @@ import com.projetos.henrique.projeto2.enumerations.EtapaDaObra;
 import com.projetos.henrique.projeto2.enumerations.Pavimento;
 import com.projetos.henrique.projeto2.enumerations.TipoDeNaoConformidade;
 
+import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -27,7 +29,13 @@ public class NaoConformidade {
 	@Column(name = "id_nao_conformidade")
 	private UUID idNaoConformidade;
 	
-	//private List<String> imagens = new ArrayList<>();
+	@ElementCollection
+	@CollectionTable(
+	    name = "nao_conformidade_imagens",
+	    joinColumns = @JoinColumn(name = "id_nao_conformidade")
+	)
+	@Column(name = "imagem", columnDefinition = "bytea")
+	private List<byte[]> imagens = new ArrayList<>();
 	
 	@Column(name = "observacao_nao_conformidade")
 	private String observacao;
@@ -49,11 +57,11 @@ public class NaoConformidade {
 		
 	}
 	
-	public NaoConformidade(UUID idNaoConformidade, List<String> imagens, String observacao, Relatorio relatorio, Pavimento pavimento,
+	public NaoConformidade(UUID idNaoConformidade, List<byte[]> imagens, String observacao, Relatorio relatorio, Pavimento pavimento,
 			EtapaDaObra etapaDaObra, TipoDeNaoConformidade tipoDeNaoConformidade) {
 		
 		this.idNaoConformidade = idNaoConformidade;
-		//this.imagens = imagens;
+		this.imagens = imagens;
 		this.observacao = observacao;
 		this.relatorio = relatorio;
 		this.pavimento = pavimento;
@@ -61,10 +69,10 @@ public class NaoConformidade {
 		this.tipoDeNaoConformidade = tipoDeNaoConformidade;
 	}
 	
-	public NaoConformidade(List<String> imagens, String observacao, Relatorio relatorio, Pavimento pavimento,
+	public NaoConformidade(List<byte[]> imagens, String observacao, Relatorio relatorio, Pavimento pavimento,
 			EtapaDaObra etapaDaObra, TipoDeNaoConformidade tipoDeNaoConformidade) {
 		
-		//this.imagens = imagens;
+		this.imagens = imagens;
 		this.observacao = observacao;
 		this.relatorio = relatorio;
 		this.pavimento = pavimento;
@@ -88,14 +96,12 @@ public class NaoConformidade {
 	public void setIdNaoConformidade(UUID idNaoConformidade) {
 		this.idNaoConformidade = idNaoConformidade;
 	}
-	/*
-	public List<String> getImagens() {
+	public List<byte[]> getImagens() {
 		return imagens;
 	}
-	public void setImagens(List<String> imagens) {
+	public void setImagens(List<byte[]> imagens) {
 		this.imagens = imagens;
 	}
-	*/
 	public String getObservacao() {
 		return observacao;
 	}

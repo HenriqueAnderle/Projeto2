@@ -5,9 +5,11 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 import com.projetos.henrique.projeto2.models.MaterialServico;
 
+@Repository
 public interface MaterialServicoRepository extends JpaRepository<MaterialServico, UUID>{
 
 	Optional<List<MaterialServico>> findAllBySolicitacao_IdSolicitacao(UUID idSolicitacao);

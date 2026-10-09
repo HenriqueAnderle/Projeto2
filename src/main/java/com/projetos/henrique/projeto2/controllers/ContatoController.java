@@ -10,6 +10,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,12 +19,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.projetos.henrique.projeto2.dtos.ContatoDto;
 import com.projetos.henrique.projeto2.models.Contato;
+import com.projetos.henrique.projeto2.models.Usuario;
 import com.projetos.henrique.projeto2.services.ContatoService;
+import com.projetos.henrique.projeto2.services.UsuarioService;
 
 import jakarta.validation.Valid;
 
@@ -33,13 +35,15 @@ import jakarta.validation.Valid;
 public class ContatoController {
 
 	final ContatoService contatoService;
+	final UsuarioService usuarioService;
 	
-	public ContatoController(ContatoService contatoService) {
+	public ContatoController(ContatoService contatoService, UsuarioService usuarioService) {
 		this.contatoService = contatoService;
+		this.usuarioService = usuarioService;
 	}
 	
-	@PostMapping("/inserir")
-	public ResponseEntity<Object> inserirContato(@RequestBody @Valid ContatoDto contatoDto){
+	@PostMapping
+	public ResponseEntity<Object> inserirContato(@RequestBody @Valid ContatoDto contatoDto, Authentication authentication){
 		if(contatoService.existsByNome(contatoDto.getNome())) {
 			return ResponseEntity.status(HttpStatus.CONFLICT).body("Conflict: Nome de Contato Já em Uso");
 		}
@@ -48,6 +52,10 @@ public class ContatoController {
 		}
 		
 		Contato contato = new Contato();
+		
+		Optional<Usuario> usuarioOptional = usuarioService.findByEmail(authentication.getName());
+		contato.setUsuario(usuarioOptional.get());
+		
 		BeanUtils.copyProperties(contatoDto, contato);
 		
 		return ResponseEntity.status(HttpStatus.CREATED).body(contatoService.inserirContato(contato));
@@ -55,13 +63,18 @@ public class ContatoController {
 	
 	@GetMapping
 	public ResponseEntity<Page<Contato>> getAllContatos(@PageableDefault(page = 0, size = 10, direction = Sort.Direction.ASC) Pageable pageable,
-			@RequestParam UUID idUsuario){		
-		return ResponseEntity.status(HttpStatus.OK).body(contatoService.findAllByUsuario(pageable, idUsuario));
+			Authentication authentication){
+		Optional<Usuario> usuarioOptional = usuarioService.findByEmail(authentication.getName());
+		
+		return ResponseEntity.status(HttpStatus.OK).body(contatoService.findAllByUsuario(pageable, usuarioOptional.get().getIdUsuario()));
 	}
 	
 	@PutMapping("/{idContato}/editar")
-	public ResponseEntity<Object> editarContato(@PathVariable(value = "idContato") UUID idContato, @RequestBody @Valid ContatoDto contatoDto){
-		Optional<Contato> contatoOptional = contatoService.findById(idContato);
+	public ResponseEntity<Object> editarContato(@PathVariable(value = "idContato") UUID idContato, @RequestBody @Valid ContatoDto contatoDto, 
+			Authentication authentication){
+		Optional<Usuario> usuarioOptional = usuarioService.findByEmail(authentication.getName());
+		
+		Optional<Contato> contatoOptional = contatoService.findByIdContatoAndUsuario_IdUsuario(idContato, usuarioOptional.get().getIdUsuario());
 		
 		if(!contatoOptional.isPresent()) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Contato Not Found");
@@ -77,21 +90,11 @@ public class ContatoController {
 		
 	}
 	
-	/*
-	@GetMapping("/{idContato}")
-	public ResponseEntity<Object> getByUsuario(@PathVariable(value = "idContato") UUID idContato){
-		Optional<Contato> contatoOptional = contatoService.findById(idContato);
-		if(!contatoOptional.isPresent()) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Contato Not Found");
-		}
-		return ResponseEntity.status(HttpStatus.OK).body(contatoOptional.get());
-		
-	}
-	*/
-	
 	@DeleteMapping("/{idContato}")
-	public ResponseEntity<Object> deletarContato(@PathVariable(value = "idContato") UUID idContato){
-		Optional<Contato> contatoOptional = contatoService.findById(idContato);
+	public ResponseEntity<Object> deletarContato(@PathVariable(value = "idContato") UUID idContato, Authentication authentication){
+		Optional<Usuario> usuarioOptional = usuarioService.findByEmail(authentication.getName());
+		
+		Optional<Contato> contatoOptional = contatoService.findByIdContatoAndUsuario_IdUsuario(idContato, usuarioOptional.get().getIdUsuario());
 		
 		if(!contatoOptional.isPresent()) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Contato Not Found");

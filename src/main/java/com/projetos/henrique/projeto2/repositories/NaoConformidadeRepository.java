@@ -5,9 +5,11 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 import com.projetos.henrique.projeto2.models.NaoConformidade;
 
+@Repository
 public interface NaoConformidadeRepository extends JpaRepository<NaoConformidade, UUID>{
 
 	Optional<List<NaoConformidade>> findAllByRelatorio_IdRelatorio(UUID idRelatorio);

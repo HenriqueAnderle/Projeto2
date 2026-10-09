@@ -34,6 +34,10 @@ public class ContatoService {
 		return contatoRepository.findById(idUsuario);
 	}
 	
+	public Optional<Contato> findByIdContatoAndUsuario_IdUsuario(UUID idContato, UUID idUsuario){
+		return contatoRepository.findByIdContatoAndUsuario_IdUsuario(idContato, idUsuario);
+	}
+	
 	public Page<Contato> findAllByUsuario(Pageable pageable, UUID idUsuario){
 		return contatoRepository.findAllByUsuario_IdUsuario(pageable, idUsuario);
 	}

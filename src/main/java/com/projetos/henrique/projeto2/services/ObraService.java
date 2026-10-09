@@ -34,6 +34,10 @@ public class ObraService {
 		return obraRepository.findById(idObra);
 	}
 	
+	public Optional<Obra> findByIdObraAndUsuario_IdUsuario(UUID idObra, UUID idUsuario) {
+		return obraRepository.findByIdObraAndUsuario_IdUsuario(idObra, idUsuario);
+	}
+	
 	public Optional<Obra> findByNome(String nome){
 		return obraRepository.findByNome(nome);
 	}
