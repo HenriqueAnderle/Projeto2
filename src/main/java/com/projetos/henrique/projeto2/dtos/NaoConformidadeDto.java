@@ -2,7 +2,6 @@ package com.projetos.henrique.projeto2.dtos;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import com.projetos.henrique.projeto2.enumerations.EtapaDaObra;
 import com.projetos.henrique.projeto2.enumerations.Pavimento;
@@ -14,13 +13,10 @@ import jakarta.validation.constraints.NotNull;
 
 public class NaoConformidadeDto {
 	
-	private List<String> imagens = new ArrayList<>();
+	private List<byte[]> imagens = new ArrayList<>();
 	
 	@NotBlank
 	private String observacao;
-	
-	@NotNull
-	private UUID idRelatorio;
 	
 	@NotNull
 	private Pavimento pavimento;
@@ -40,7 +36,6 @@ public class NaoConformidadeDto {
 		NaoConformidadeDto dto = new NaoConformidadeDto();
 		
 		dto.setObservacao(naoConformidade.getObservacao());
-		dto.setRelatorio(naoConformidade.getRelatorio().getIdRelatorio());
 		dto.setPavimento(naoConformidade.getPavimento());
 		dto.setEtapaDaObra(naoConformidade.getEtapaDaObra());
 		dto.setTipoDeNaoConformidade(naoConformidade.getTipoDeNaoConformidade());
@@ -51,11 +46,11 @@ public class NaoConformidadeDto {
 		return naoConformidadesDtos;
 	}
 
-	public List<String> getImagens() {
+	public List<byte[]> getImagens() {
 		return imagens;
 	}
 
-	public void setImagens(List<String> imagens) {
+	public void setImagens(List<byte[]> imagens) {
 		this.imagens = imagens;
 	}
 
@@ -65,14 +60,6 @@ public class NaoConformidadeDto {
 
 	public void setObservacao(String observacao) {
 		this.observacao = observacao;
-	}
-	
-	public UUID getRelatorio() {
-		return idRelatorio;
-	}
-	
-	public void setRelatorio(UUID idRelatorio) {
-		this.idRelatorio = idRelatorio;
 	}
 
 	public Pavimento getPavimento() {

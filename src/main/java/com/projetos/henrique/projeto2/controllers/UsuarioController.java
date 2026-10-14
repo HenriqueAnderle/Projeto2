@@ -1,7 +1,5 @@
 package com.projetos.henrique.projeto2.controllers;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -12,6 +10,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -22,10 +23,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.projetos.henrique.projeto2.dtos.LoginRequest;
 import com.projetos.henrique.projeto2.dtos.UsuarioDto;
-import com.projetos.henrique.projeto2.enumerations.RoleNome;
-import com.projetos.henrique.projeto2.models.Role;
+
 import com.projetos.henrique.projeto2.models.Usuario;
+import com.projetos.henrique.projeto2.services.JwtService;
 import com.projetos.henrique.projeto2.services.RoleService;
 import com.projetos.henrique.projeto2.services.UsuarioService;
 
@@ -39,11 +41,16 @@ public class UsuarioController {
 	final UsuarioService usuarioService;
 	final PasswordEncoder passwordEncoder;
 	final RoleService roleService;
+	final AuthenticationManager authenticationManager;
+	final JwtService jwtService;
 	
-	public UsuarioController(UsuarioService usuarioService, PasswordEncoder passwordEncoder, RoleService roleService) {
+	public UsuarioController(UsuarioService usuarioService, PasswordEncoder passwordEncoder, RoleService roleService, AuthenticationManager authenticationManager,
+			JwtService jwtService) {
 		this.usuarioService = usuarioService;
 		this.passwordEncoder = passwordEncoder;
 		this.roleService = roleService;
+		this.authenticationManager = authenticationManager;
+		this.jwtService = jwtService;
 	}
 	
 	@PostMapping
@@ -57,11 +64,28 @@ public class UsuarioController {
 		Usuario usuario = new Usuario();
 		BeanUtils.copyProperties(usuarioDto, usuario);
 		
-		List<Role> roles = new ArrayList<Role>();
-		roles.add(roleService.findByRoleNome(RoleNome.ROLE_USER));
-		usuario.setRoles(roles);
+		usuario.setRole("ROLE_USER");
 		
 		return ResponseEntity.status(HttpStatus.CREATED).body(usuarioService.inserirUsuario(usuario));
+	}
+	
+	@PostMapping("/login")
+	public String authenticate(@RequestBody LoginRequest loginRequest) {
+		Authentication authenticate = authenticationManager.authenticate(
+				new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getSenha()));
+		
+		if(authenticate.isAuthenticated()) {
+						
+			String roleString = authenticate
+				.getAuthorities()
+				.iterator()
+				.next()
+				.getAuthority()
+				.replace("ROLE_", "");
+		
+			return jwtService.generateToken(loginRequest.getEmail(), roleString);
+		}
+		return null;
 	}
 	
 	@GetMapping

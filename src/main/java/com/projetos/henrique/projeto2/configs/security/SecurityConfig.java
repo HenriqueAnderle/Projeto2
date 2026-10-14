@@ -5,14 +5,15 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import com.projetos.henrique.projeto2.filters.JwtFilter;
 import com.projetos.henrique.projeto2.repositories.UsuarioRepository;
 import com.projetos.henrique.projeto2.services.UsuarioService;
 
@@ -21,20 +22,21 @@ import com.projetos.henrique.projeto2.services.UsuarioService;
 public class SecurityConfig {
 	
 	final UsuarioRepository usuarioRepository;
+	final JwtFilter jwtFilter;
 	
-	public SecurityConfig(UsuarioRepository usuarioRepository) {
+	public SecurityConfig(UsuarioRepository usuarioRepository, JwtFilter jwtFilter) {
 		this.usuarioRepository = usuarioRepository;
+		this.jwtFilter = jwtFilter;
 	}
 	
 	@Bean
     public SecurityFilterChain basicAuth(HttpSecurity http) throws Exception {
 		http
+		.csrf(csrf -> csrf.disable())
         .authorizeHttpRequests(auth -> auth
         	.requestMatchers("/usuario").permitAll()
             .anyRequest().authenticated()
-        )
-        .httpBasic(Customizer.withDefaults())
-        .csrf(csrf -> csrf.disable());
+        ).addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
 		return http.build();
     }

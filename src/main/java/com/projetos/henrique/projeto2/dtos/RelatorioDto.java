@@ -1,7 +1,6 @@
 package com.projetos.henrique.projeto2.dtos;
 
 import java.time.LocalDate;
-import java.util.UUID;
 
 import com.projetos.henrique.projeto2.enumerations.CondicaoClimatica;
 import com.projetos.henrique.projeto2.enumerations.Tempo;
@@ -25,9 +24,6 @@ public class RelatorioDto {
 	private String nomeObra;
 	
 	@NotNull
-	private UUID idUsuario;
-	
-	@NotNull
 	private CondicaoClimatica condicaoClimatica;
 	
 	@NotNull
@@ -41,7 +37,6 @@ public class RelatorioDto {
         dto.setEmpresaExecutora(relatorio.getEmpresaExecutora());
         dto.setCondicao(relatorio.isCondicao());
         dto.setNomeObra(relatorio.getObra().getNome());
-        dto.setIdUsuario(relatorio.getUsuario().getIdUsuario());
         dto.setCondicaoClimatica(relatorio.getCondicaoClimatica());
         dto.setTempo(relatorio.getTempo());
 
@@ -78,14 +73,6 @@ public class RelatorioDto {
 
 	public void setNomeObra(String nomeObra) {
 		this.nomeObra = nomeObra;
-	}
-
-	public UUID getIdUsuario() {
-		return idUsuario;
-	}
-
-	public void setIdUsuario(UUID idUsuario) {
-		this.idUsuario = idUsuario;
 	}
 
 	public CondicaoClimatica getCondicaoClimatica() {

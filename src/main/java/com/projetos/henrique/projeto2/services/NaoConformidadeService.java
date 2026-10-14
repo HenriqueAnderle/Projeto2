@@ -4,8 +4,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.projetos.henrique.projeto2.models.NaoConformidade;
@@ -29,11 +27,6 @@ public class NaoConformidadeService {
 	
 	public void deletarNaoConformidade(NaoConformidade naoConformidade) {
 		naoConformidadeRepository.delete(naoConformidade);
-	}
-	
-	//Excluir esse aqui depois
-	public Page<NaoConformidade> findAllNaoConformidade(Pageable pageable){
-		return naoConformidadeRepository.findAll(pageable);
 	}
 	
 	public Optional<List<NaoConformidade>> findAllByRelatorio(UUID idRelatorio){

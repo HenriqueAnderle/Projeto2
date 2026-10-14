@@ -21,7 +21,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "usuario")
-public class Usuario implements Serializable, UserDetails {
+public class Usuario implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
@@ -48,11 +48,8 @@ public class Usuario implements Serializable, UserDetails {
 	@Column(name = "contador_solicitacao_man_usuario")
 	private Long contadorSolicitacaoMan = (long) 0;
 	
-	@ManyToMany
-	@JoinTable(name = "usuarios_roles",
-            joinColumns = @JoinColumn(name = "id_usuario"),
-            inverseJoinColumns = @JoinColumn(name = "id_role"))
-	private List<Role> roles;
+	@Column(name = "role_usuario")
+	private String role;
 	
 	public Usuario() {
 		
@@ -125,11 +122,11 @@ public class Usuario implements Serializable, UserDetails {
 	public void setContadorSolicitacaoMan(Long contadorSolicitacaoMan) {
 		this.contadorSolicitacaoMan = contadorSolicitacaoMan;
 	}
-	public List<Role> getRoles() {
-		return roles;
+	public String getRole() {
+		return role;
 	}
-	public void setRoles(List<Role> roles) {
-		this.roles = roles;
+	public void setRole(String role) {
+		this.role = role;
 	}
 
 	public long proximoRelatorio(Usuario usuario) {
@@ -146,10 +143,10 @@ public class Usuario implements Serializable, UserDetails {
 		contadorSolicitacaoMan = usuario.getContadorSolicitacaoMan();
 		return contadorSolicitacaoMan++;
 	}
-
+	/*
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		return roles;
+		return role;
 	}
 
 	@Override
@@ -181,4 +178,5 @@ public class Usuario implements Serializable, UserDetails {
     public boolean isEnabled() {
         return true;
     }
+    */
 }

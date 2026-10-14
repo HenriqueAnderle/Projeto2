@@ -12,6 +12,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,7 +20,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.projetos.henrique.projeto2.dtos.NaoConformidadeDto;
@@ -28,9 +28,11 @@ import com.projetos.henrique.projeto2.dtos.RelatorioRequestDto;
 import com.projetos.henrique.projeto2.dtos.VistoriadorDto;
 import com.projetos.henrique.projeto2.models.NaoConformidade;
 import com.projetos.henrique.projeto2.models.Relatorio;
+import com.projetos.henrique.projeto2.models.Usuario;
 import com.projetos.henrique.projeto2.models.Vistoriador;
 import com.projetos.henrique.projeto2.services.NaoConformidadeService;
 import com.projetos.henrique.projeto2.services.RelatorioService;
+import com.projetos.henrique.projeto2.services.UsuarioService;
 import com.projetos.henrique.projeto2.services.VistoriadorService;
 
 import jakarta.validation.Valid;
@@ -43,17 +45,23 @@ public class RelatorioController {
 	final RelatorioService relatorioService;
 	final NaoConformidadeService naoConformidadeService;
 	final VistoriadorService vistoriadorService;
+	final UsuarioService usuarioService;
 	
-	public RelatorioController(RelatorioService relatorioService, NaoConformidadeService naoConformidadeService, VistoriadorService vistoriadorService) {
+	public RelatorioController(RelatorioService relatorioService, NaoConformidadeService naoConformidadeService, VistoriadorService vistoriadorService, 
+			UsuarioService usuarioService) {
 		this.relatorioService = relatorioService;
 		this.naoConformidadeService = naoConformidadeService;
 		this.vistoriadorService = vistoriadorService;
+		this.usuarioService = usuarioService;
 	}
 	
 	@PostMapping
-	public ResponseEntity<Object> inserirRelatorio(@RequestBody @Valid RelatorioRequestDto relatorioRequest){
+	public ResponseEntity<Object> inserirRelatorio(@RequestBody @Valid RelatorioRequestDto relatorioRequest, Authentication authentication){
 		
 		Relatorio relatorio = relatorioService.inserirRelatorio(relatorioRequest.getRelatorio());
+		
+		Optional<Usuario> usuario = usuarioService.findByEmail(authentication.getName());
+		relatorio.setUsuario(usuario.get());
 		
 		List<NaoConformidade> naoConformidades = new ArrayList<NaoConformidade>();
 		for(NaoConformidadeDto naoConformidadeDto : relatorioRequest.getNaoConformidades()) {
@@ -86,16 +94,20 @@ public class RelatorioController {
 	
 	@GetMapping
 	public ResponseEntity<Page<Relatorio>> getAllByUsuario(@PageableDefault(page = 0, size = 10, direction = Sort.Direction.ASC) Pageable pageable, 
-			@RequestParam UUID idUsuario){
-		return ResponseEntity.status(HttpStatus.OK).body(relatorioService.findAllByUsuario(pageable, idUsuario));
+			Authentication authentication){
+		Optional<Usuario> usuario = usuarioService.findByEmail(authentication.getName());
+		
+		return ResponseEntity.status(HttpStatus.OK).body(relatorioService.findAllByUsuario(pageable, usuario.get().getIdUsuario()));
 	}
 	
 	@GetMapping("/{idRelatorio}")
-	public ResponseEntity<Object> getById(@PathVariable(value = "idRelatorio") UUID idRelatorio){
+	public ResponseEntity<Object> getById(@PathVariable(value = "idRelatorio") UUID idRelatorio, Authentication authentication){
 		
 		RelatorioRequestDto relatorioRequestDto = new RelatorioRequestDto();
 		
-		Optional<Relatorio> relatorioOptional = relatorioService.findById(idRelatorio);
+		Optional<Usuario> usuario = usuarioService.findByEmail(authentication.getName());
+		
+		Optional<Relatorio> relatorioOptional = relatorioService.findAllByIdRelatorioAndUsuario_IdUsuario(idRelatorio, usuario.get().getIdUsuario());
 		if(!relatorioOptional.isPresent()) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Relatorio Not Found");
 		}
@@ -118,9 +130,11 @@ public class RelatorioController {
 	}
 	
 	@DeleteMapping("/{idRelatorio}")
-	public ResponseEntity<Object> deletarObra(@PathVariable(value = "idRelatorio") UUID idRelatorio){
+	public ResponseEntity<Object> deletarObra(@PathVariable(value = "idRelatorio") UUID idRelatorio, Authentication authentication){
 		
-		Optional<Relatorio> relatorioOptional = relatorioService.findById(idRelatorio);
+		Optional<Usuario> usuario = usuarioService.findByEmail(authentication.getName());
+		
+		Optional<Relatorio> relatorioOptional = relatorioService.findAllByIdRelatorioAndUsuario_IdUsuario(idRelatorio, usuario.get().getIdUsuario());
 		
 		if(!relatorioOptional.isPresent()) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Relatorio Not Found");

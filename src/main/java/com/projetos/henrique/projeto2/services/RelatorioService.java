@@ -11,10 +11,8 @@ import org.springframework.stereotype.Service;
 import com.projetos.henrique.projeto2.dtos.RelatorioDto;
 import com.projetos.henrique.projeto2.models.Obra;
 import com.projetos.henrique.projeto2.models.Relatorio;
-import com.projetos.henrique.projeto2.models.Usuario;
 import com.projetos.henrique.projeto2.repositories.ObraRepository;
 import com.projetos.henrique.projeto2.repositories.RelatorioRepository;
-import com.projetos.henrique.projeto2.repositories.UsuarioRepository;
 
 import jakarta.transaction.Transactional;
 
@@ -24,12 +22,10 @@ public class RelatorioService {
 
 	final RelatorioRepository relatorioRepository;
 	final ObraRepository obraRepository;
-	final UsuarioRepository usuarioRepository;
 	
-	public RelatorioService(RelatorioRepository relatorioRepository, ObraRepository obraRepository, UsuarioRepository usuarioRepository) {
+	public RelatorioService(RelatorioRepository relatorioRepository, ObraRepository obraRepository) {
 		this.relatorioRepository = relatorioRepository;
 		this.obraRepository = obraRepository;
-		this.usuarioRepository = usuarioRepository;
 	}
 	
 	public Relatorio inserirRelatorio(RelatorioDto relatorioDto) {
@@ -40,11 +36,7 @@ public class RelatorioService {
 		Obra obra = obraRepository.findByNome(relatorioDto.getNomeObra())
 				.orElseThrow(() -> new RuntimeException("Nome Obra Not Found"));
 		
-		Usuario usuario = usuarioRepository.findById(relatorioDto.getIdUsuario())
-				.orElseThrow(() -> new RuntimeException("Id Usuario Not Found"));
-		
 		relatorio.setObra(obra);
-		relatorio.setUsuario(usuario);
 		
 		return relatorioRepository.save(relatorio);
 	}
@@ -55,6 +47,10 @@ public class RelatorioService {
 	
 	public Optional<Relatorio> findById(UUID idRelatorio){
 		return relatorioRepository.findById(idRelatorio);
+	}
+	
+	public Optional<Relatorio> findAllByIdRelatorioAndUsuario_IdUsuario(UUID idRelatorio, UUID idUsuario){
+		return relatorioRepository.findAllByIdRelatorioAndUsuario_IdUsuario(idRelatorio, idUsuario);
 	}
 	
 	public Page<Relatorio> findAllByUsuario(Pageable pageable, UUID idUsuario){

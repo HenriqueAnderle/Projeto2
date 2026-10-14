@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -54,7 +55,11 @@ public class UsuarioService implements UserDetailsService{
 	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 		Optional<Usuario> usuario = usuarioRepository.findByEmail(email);
 		
-		return User.builder().username(usuario.get().getUsername()).password(usuario.get().getPassword()).authorities(usuario.get().getRoles()).build();
+		return User.builder()
+				.username(usuario.get().getEmail())
+				.password(usuario.get().getSenha())
+				.authorities(new SimpleGrantedAuthority(usuario.get().getRole()))
+				.build();
 	}
 	
 }
