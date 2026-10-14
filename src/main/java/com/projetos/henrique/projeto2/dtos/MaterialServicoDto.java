@@ -2,7 +2,6 @@ package com.projetos.henrique.projeto2.dtos;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import com.projetos.henrique.projeto2.enumerations.Unidade;
 import com.projetos.henrique.projeto2.models.MaterialServico;
@@ -23,10 +22,7 @@ public class MaterialServicoDto {
 	
 	@NotNull
 	private Unidade unidade;
-	
-	@NotNull
-	private UUID idSolicitacao;
-	
+		
 	public static List<MaterialServicoDto> fromEntity(List<MaterialServico> materiaisServicos) {
 		
 		List<MaterialServicoDto> dtos = new ArrayList<MaterialServicoDto>();
@@ -39,7 +35,6 @@ public class MaterialServicoDto {
 			dto.setQuantidade(materialServico.getQuantidade());
 			dto.setDescricao(materialServico.getDescricao());
 			dto.setUnidade(materialServico.getUnidade());
-			dto.setIdSolicitacao(materialServico.getSolicitacao().getIdSolicitacao());
 			
 			dtos.add(dto);
 		}
@@ -77,13 +72,5 @@ public class MaterialServicoDto {
 
 	public void setUnidade(Unidade unidade) {
 		this.unidade = unidade;
-	}
-
-	public UUID getIdSolicitacao() {
-		return idSolicitacao;
-	}
-
-	public void setIdSolicitacao(UUID idSolicitacao) {
-		this.idSolicitacao = idSolicitacao;
 	}
 }

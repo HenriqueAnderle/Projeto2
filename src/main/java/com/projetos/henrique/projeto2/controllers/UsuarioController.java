@@ -10,6 +10,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -28,32 +29,30 @@ import com.projetos.henrique.projeto2.dtos.UsuarioDto;
 
 import com.projetos.henrique.projeto2.models.Usuario;
 import com.projetos.henrique.projeto2.services.JwtService;
-import com.projetos.henrique.projeto2.services.RoleService;
 import com.projetos.henrique.projeto2.services.UsuarioService;
 
 import jakarta.validation.Valid;
 
 @RestController
 @CrossOrigin(origins = "*", maxAge = 3600)
-@RequestMapping("/usuario")
+@RequestMapping("/home")
 public class UsuarioController {
 
 	final UsuarioService usuarioService;
 	final PasswordEncoder passwordEncoder;
-	final RoleService roleService;
 	final AuthenticationManager authenticationManager;
 	final JwtService jwtService;
 	
-	public UsuarioController(UsuarioService usuarioService, PasswordEncoder passwordEncoder, RoleService roleService, AuthenticationManager authenticationManager,
+	public UsuarioController(UsuarioService usuarioService, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager,
 			JwtService jwtService) {
 		this.usuarioService = usuarioService;
 		this.passwordEncoder = passwordEncoder;
-		this.roleService = roleService;
 		this.authenticationManager = authenticationManager;
 		this.jwtService = jwtService;
 	}
 	
 	@PostMapping
+	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<Object> inserirUsuario(@RequestBody @Valid UsuarioDto usuarioDto){
 		if(usuarioService.existsByEmail(usuarioDto.getEmail())) {
 			return ResponseEntity.status(HttpStatus.CONFLICT).body("Conflict: Email Já em Uso");
@@ -89,11 +88,13 @@ public class UsuarioController {
 	}
 	
 	@GetMapping
+	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<Page<Usuario>> getAll(@PageableDefault(page = 0, size = 10, direction = Sort.Direction.ASC) Pageable pageable){
 		return ResponseEntity.status(HttpStatus.OK).body(usuarioService.findAll(pageable));
 	}
 	
 	@GetMapping("/{idUsuario}")
+	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<Object> getById(@PathVariable(value = "idUsuario") UUID idUsuario){
 		Optional<Usuario> usuarioOptional = usuarioService.findById(idUsuario);
 		
@@ -105,6 +106,7 @@ public class UsuarioController {
 	}
 	
 	@DeleteMapping("/{idUsuario}")
+	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<Object> deletarUsuario(@PathVariable(value = "idUsuario") UUID idUsuario){
 		Optional<Usuario> usuarioOptional = usuarioService.findById(idUsuario);
 		

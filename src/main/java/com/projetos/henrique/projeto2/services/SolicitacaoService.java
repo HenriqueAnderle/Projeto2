@@ -38,4 +38,8 @@ public class SolicitacaoService {
 		return solicitacaoRepository.findAllByUsuario_IdUsuario(pageable, idUsuario);
 	}
 	
+	public Optional<Solicitacao> findAllByIdSolcitiacaoAndUsuario_IdUsuario(UUID idSolicitacao, UUID idUsuario){
+		return solicitacaoRepository.findAllByIdSolicitacaoAndUsuario_IdUsuario(idSolicitacao, idUsuario);
+	}
+	
 }
